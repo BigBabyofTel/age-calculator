@@ -1,50 +1,44 @@
 <script lang="ts">
+	type Birthday = {
+		year: number | string | null;
+		month: number | string | null;
+		day: number | string | null;
+	};
 
+	type bdayInput = string;
 
-	let age = $state('');
+	let age = $state<Birthday>();
 
-	const birthday = $state({
-		month: '',
-		day: '',
-		year: '',
-	})
+	let birthday = $derived(age);
 
-	const ageBrokenDown = $derived({
-		years: 0,
-		month: 0,
-		day: 0
-	});
-
-	console.log(age)
-
-	function calculateAge(age: string)  {
+	function calculateAge(age: bdayInput | Birthday | undefined) : Birthday | undefined {
 		let year: string, month: string, day: string;
-		year = age.substring(0, 4);
-		month = age.substring(5, 7);
-		day = age.substring(8, 10);
-		return { year, month, day };
+		if (typeof age === 'string' ) {
+			year = age.substring(0, 4);
+			month = age.substring(5, 7);
+			day = age.substring(8, 10);
+			console.log(year, month, day);
+			birthday = {year, month, day}
+			return { year, month, day };
+		}
 	}
-
-	const newAge = calculateAge(age);
 </script>
 
-
-<div class="bg-blue-500 p-2 w-full h-dvh flex flex-col items-center justify-center">
-	<h1 class="p-2 mb-24 text-5xl font-bold">Age Calculator</h1>
-	<div class="w-11/12 h-1/2 bg-yellow-600 flex flex-col items-center justify-center">
-		<div class="bg-green-400 w-full h-1/2 p-5 flex flex-col items-center justify-center">
+<div class="flex h-dvh w-full flex-col items-center justify-center bg-blue-500 p-2">
+	<h1 class="mb-24 p-2 text-5xl font-bold">Age Calculator</h1>
+	<div class="flex h-1/2 w-11/12 flex-col items-center justify-center bg-yellow-600">
+		<div class="flex h-1/2 w-full flex-col items-center justify-evenly bg-green-400 p-5">
 			<p>This is my app now!!!!</p>
-			<div class="w-full flex justify-around">
-				<span>Birthday : <input type="date" name="date" bind:value={age} />
-				</span>
+			<div class="flex w-full justify-around">
+				<span>Birthday : <input type="date" name="date" bind:value={age} /> </span>
 			</div>
+			<button class="rounded-3xl border p-3 hover:bg-blue-600" onclick={() => calculateAge(age)}>Calculate</button>
 		</div>
-		<div class="bg-purple-400 w-3/4 h-1/2 p-5 flex flex-col items-center justify-center">
-			<span>Age : {newAge}</span>
-			<span>{newAge.year} Years</span>
-			<span>{newAge.month} Months</span>
-			<span>{newAge.day} Days</span>
+		<div class="flex h-1/2 w-3/4 flex-col items-center justify-center bg-purple-400 p-5">
+			<span>Age : {age}</span>
+			<span> {birthday ? birthday.year : "no value"} Years</span>
+			<span>{birthday ? birthday.month : "no value"} Months</span>
+			<span>{birthday ? birthday.day : "no value"} Days</span>
 		</div>
 	</div>
-
 </div>
